@@ -1,0 +1,17 @@
+# Only the AIR release set is tracked; everything else in this workspace is local.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/requirements.txt
+!/create_venv.sh
+!/air/
+!/lxt/
+!/.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/.env.example
+
+__pycache__/
+*.py[cod]
+*.log

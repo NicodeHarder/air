@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "air",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/air/run.py",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/env/bin/python",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "args": [
+                // Model to compress — edit to switch. Examples:
+                //   TinyLlama/TinyLlama-1.1B-Chat-v1.0, jeffwan/llama-7b-hf,
+                //   meta-llama/Llama-2-7b-hf, mistralai/Mistral-7B-v0.1, Qwen/Qwen2-0.5B-Instruct
+                "--model_name", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+                "--compression_method", "air",
+                // backward influence signal: relevances (AttnLRP) | weightxgrad (|∂L/∂W·W|) | fisher ((∂L/∂W)²)
+                "--importance_metrics", "relevances",
+                "--parameter_rate_idx_list", "60",
+                "--n_samples_calibration", "25",
+                "--relevance_subset_seq_len", "2048",
+                "--evaluation_perplexity_data", "wikitext2",
+                "--batch_size", "4",
+                "--SAVE_COMPRESSED_MODEL",
+                "--OPTIMIZE_KV_CACHE",
+                "--MEASURE_THROUGHPUT",
+                "--MEASURE_TIME",
+                // throughput benchmark: batch / tokens-to-generate / prompt length.
+                //   batch auto-downscales to the free GPU memory (KV-cache estimate + OOM fallback).
+                "--throughput_batch_size", "64",
+                "--throughput_n_generate", "512",
+                "--throughput_prompt_len", "16",
+                "--OVERWRITE_CACHE"
+                // EVALUATE, SVD, RELEVANCE_NORMALIZATION default to True (use --no-EVALUATE etc. to disable)
+                // add "--PERPLEXITY_ONLY" to skip the throughput/latency/peak-mem pass
+                // caches (S, I, compressed model) are config-keyed and reused automatically;
+                //   force recompute with "--OVERWRITE_CACHE" (or --OVERWRITE_ANALYSIS / --OVERWRITE_SVD)
+            ]
+        }
+    ]
+}
